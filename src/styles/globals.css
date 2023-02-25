@@ -30,6 +30,14 @@ h6 {
     @apply text-sm
 }
 
+hr {
+    @apply my-2
+}
+
+/* custom elements */
+
+
+/* buttons */
 .btn {
     @apply px-4 py-2 rounded-xl
 }
@@ -56,4 +64,18 @@ h6 {
 
 .btn.green:hover {
     @apply bg-green-100 text-green-500
+}
+
+/* control forms */
+
+input.control, textarea.control {
+    @apply px-4 py-2 rounded-xl border
+}
+
+input.control:read-only, textarea.control:read-only {
+    @apply bg-gray-50 text-gray-500
+}
+
+input.control:read-only:focus-visible, textarea.control:read-only:focus-visible {
+    @apply outline-none
 }

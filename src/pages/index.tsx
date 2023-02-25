@@ -7,7 +7,7 @@ export default function Home() {
 				<div className="text-center">
 					<h1 className="text-5xl">idkncc</h1>
 					<p className="font-medium">Full Stack</p>
-					<div className="flex flex-row gap-3 mt-4 justify-center">
+					<div className="flex flex-row gap-2 justify-center">
 						<svg viewBox="0 0 128 128" width="28" height="28">
 							<path fill="#fff" d="M22.67 47h99.67v73.67H22.67z"></path>
 							<path data-name="original" fill="#007acc"
@@ -21,17 +21,23 @@ export default function Home() {
 								  d="M85 96.5c-11.11 6.13-26.38 6.76-41.75.47A64.53 64.53 0 0113.84 73a50 50 0 0010.85 6.32c15.87 7.1 31.73 6.61 42.9 0-15.9-11.66-29.4-26.82-39.46-39.2a43.47 43.47 0 01-5.29-6.82c12.16 10.61 31.5 24 38.38 27.79a271.77 271.77 0 01-27-32.34 266.8 266.8 0 0044.47 34.87c.71.38 1.26.7 1.7 1a32.7 32.7 0 001.21-3.51c3.71-12.89-.53-27.54-9.79-39.67C93.25 33.81 106 57.05 100.66 76.51c-.14.53-.29 1-.45 1.55l.19.22c10.59 12.63 7.68 26 6.35 23.5C101 91 90.37 94.33 85 96.5z"></path>
 						</svg>
 
+						<svg viewBox="0 0 128 128" width="28" height="28">
+							<path d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64c11.2 0 21.7-2.9 30.8-7.9L48.4 55.3v36.6h-6.8V41.8h6.8l50.5 75.8C116.4 106.2 128 86.5 128 64c0-35.3-28.7-64-64-64zm22.1 84.6l-7.5-11.3V41.8h7.5v42.8z"></path>
+						</svg>
+
+
 					</div>
 
 				</div>
-				<div className="flex flex-col gap-2 items-center">
-					<div className="flex flex-row gap-2">
-						<Link className="btn blue" href="/viewer">Файлы</Link>
-					</div>
-					<div className="flex flex-row gap-2">
-						<Link className="btn green" href="https://github.com/Mon4ik">GitHub</Link>
-						<Link className="btn green" href="https://tiktok.com/@idkncc">TikTok</Link>
-					</div>
+				<div className="grid grid-cols-2 gap-2 text-center">
+
+					<Link className="btn blue" href="/viewer">Файлы</Link>
+					<Link className="btn blue" href="/resources">Ресурсы</Link>
+
+
+					<Link className="btn green" href="https://github.com/Mon4ik">GitHub</Link>
+					<Link className="btn green" href="https://tiktok.com/@idkncc">TikTok</Link>
+
 				</div>
 			</div>
 		</div>
