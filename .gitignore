@@ -2,6 +2,8 @@
 
 # other
 .idea
+/public/scarlet
+#     ^--- sorry for that
 
 # dependencies
 /node_modules

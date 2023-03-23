@@ -3,5 +3,10 @@
     "title": "loadstring генератор",
     "description": "Зачем копировать весь скрипт с pastebin или github? (Roblox)",
     "url": "/resources/loadstring"
+  },
+  {
+    "title": "Прикольные ссылки",
+    "description": "Там будут всякие классные ресурсы",
+    "url": "/resources/cool_links"
   }
 ]

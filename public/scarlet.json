@@ -1,0 +1,27 @@
+{
+  "META": {
+    "repoName": "IDKNCC's Scarlet repo",
+    "repoIcon": "https://usescarlet.com/favicon.png"
+  },
+  "Tweaked": [
+    {
+      "name": "TiktokLRD",
+      "version": "28.1.0",
+      "icon": "https://idkncc.ru/scarlet/tiktok_lrd.png",
+      "down": "https://idkncc.ru/scarlet/tiktok_lrd.ipa",
+      "dev": "Helper iOS",
+      "category": "Tweaked Apps",
+      "description": "TikTok Mod",
+      "changelog": "Version update to 1337",
+      "bundleID": "com.zhiliaoapp.musically",
+      "appstore": "com.zhiliaoapp.musically",
+      "contact": {
+        "web": "https://t.me/helper_ios"
+      },
+      "screenshots": [
+    }
+  ],
+  "Jailbreaks": [],
+  "Emulators": [],
+  "Other": []
+}

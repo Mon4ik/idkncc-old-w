@@ -1,3 +1,5 @@
+@use "mixins";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -31,10 +33,15 @@ h6 {
 }
 
 hr {
-    @apply my-2
+    @apply my-2 dark:border-slate-600
 }
 
 /* custom elements */
+
+body {
+    @apply bg-white text-black
+            dark:bg-slate-900 dark:text-neutral-50
+}
 
 
 /* buttons */
@@ -43,37 +50,27 @@ hr {
 }
 
 .btn.blue {
-    @apply bg-blue-200 text-blue-600
-}
-
-.btn.blue:active {
-    @apply bg-blue-300 text-blue-700
-}
-
-.btn.blue:hover {
-    @apply bg-blue-100 text-blue-500
+    @include mixins.button("blue")
 }
 
 .btn.green {
-    @apply bg-green-200 text-green-600
+    @include mixins.button("green")
 }
 
-.btn.green:active {
-    @apply bg-green-300 text-green-700
-}
-
-.btn.green:hover {
-    @apply bg-green-100 text-green-500
+.btn.red {
+    @include mixins.button("red")
 }
 
 /* control forms */
 
 input.control, textarea.control {
     @apply px-4 py-2 rounded-xl border
+            dark:bg-slate-900 dark:border-slate-600
 }
 
 input.control:read-only, textarea.control:read-only {
     @apply bg-gray-50 text-gray-500
+    dark:bg-slate-800 dark:text-slate-400
 }
 
 input.control:read-only:focus-visible, textarea.control:read-only:focus-visible {
