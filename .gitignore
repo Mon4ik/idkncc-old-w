@@ -2,8 +2,9 @@
 
 # other
 .idea
-/public/scarlet
-#     ^--- sorry for that
+/files
+#  ^--- this folder contains big files
+.DS_Store
 
 # dependencies
 /node_modules

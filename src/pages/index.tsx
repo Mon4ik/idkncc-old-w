@@ -40,7 +40,7 @@ export default function Home() {
 					<div className="flex flex-col gap-2">
 						<div className="grid grid-cols-2 gap-2 text-center">
 
-							<Link className="btn blue" href="/viewer">Файлы</Link>
+							<Link className="btn blue" href="https://files.idkncc.ru/">Файлы</Link>
 							<Link className="btn blue" href="/resources">Ресурсы</Link>
 
 
