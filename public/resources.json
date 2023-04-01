@@ -1,5 +1,10 @@
 [
   {
+    "title": "json2struct",
+    "description": "Сгенерировать код из JSON (Swift)",
+    "url": "/resources/json2struct"
+  },
+  {
     "title": "loadstring генератор",
     "description": "Зачем копировать весь скрипт с pastebin или github? (Roblox)",
     "url": "/resources/loadstring"

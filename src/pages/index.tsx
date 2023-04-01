@@ -2,14 +2,27 @@ import useLocalStorage from "@/utils/useLocalStorage";
 
 import Link from "next/link";
 import Layout from "@/components/Layout";
+import {useEffect, useRef} from "react";
 
 export default function Home() {
 	const [isDark, setIsDark] = useLocalStorage("dark-mode", false)
+	const mainDiv = useRef<HTMLDivElement | null>(null)
+
+	useEffect(() => {
+		// I use this effect for better viewing on mobiles
+		const int = setInterval(() => {
+			if (mainDiv.current) {
+				mainDiv.current.style.height = `${window.innerHeight}px`
+			}
+		})
+
+		return () => clearInterval(int)
+	}, [])
 
 	return (
 		<Layout>
-			<div className="p-5 sm:p-8 md:p-10 lg:p-13 h-[100vh] w-[100vw]">
-				<div className="p-3 h-full rounded-3xl border dark:border-slate-500 flex flex-col justify-around items-center">
+			<div className="p-5 sm:p-8 md:p-10 lg:p-13 w-[100vw]" style={{ height: "100vh" }} ref={mainDiv}>
+				<div className="p-3 h-full rounded-3xl border dark:border-slate-800 flex flex-col justify-around items-center">
 					<div className="text-center">
 						<h1 className="text-5xl">idkncc</h1>
 						<p className="font-medium">Full Stack</p>
