@@ -1,9 +1,13 @@
+import _ from "lodash"
 import ResourcePage from "@/components/ResourcePage";
-import Link from "next/link";
-import {useState} from "react";
-import {func} from "prop-types";
+import {useRef, useState} from "react";
+
+import Editor from "@monaco-editor/react";
+import useLocalStorage from "@/utils/useLocalStorage";
 
 export default function Json2struct() {
+	const [isDark, setIsDark] = useLocalStorage("dark-mode", false)
+
 	const [json, setJSON] = useState(`{
   "id": 1,
   "name": "Cute Quail",
@@ -60,13 +64,20 @@ export default function Json2struct() {
   ]
 }`)
 	const [swiftCode, setSwiftCode] = useState("")
+	const exampleRef = useRef<HTMLInputElement>(null)
+	const addMarkRef = useRef<HTMLInputElement>(null)
 
 	function generateCode() {
 		function isInt(n: number) {
 			return n % 1 === 0;
 		}
+
 		function uppercaseFirstLetter(w: string) {
-			return w.charAt(0).toUpperCase() + w.slice(1)
+			if (w.length === 2) {
+				return w.toUpperCase()
+			} else {
+				return w.charAt(0).toUpperCase() + w.slice(1)
+			}
 		}
 
 		const typing_names = {
@@ -77,7 +88,8 @@ export default function Json2struct() {
 
 		function OBJ2Struct(name: string, o: Record<string, any>) {
 			let code = ``
-			let struct_code = []
+			let struct_code: string[] = []
+			let coding_keys: string[] = []
 
 			for (const [key, value] of Object.entries(o)) {
 				let type = ""
@@ -85,53 +97,152 @@ export default function Json2struct() {
 					if (isInt(value)) {
 						type = "Int"
 					} else {
-						type = "Float"
+						type = "Double"
 					}
 				} else if (typeof value === "object") {
 					if (Array.isArray(value)) {
-						const struct_name = uppercaseFirstLetter(key.slice(0, -1))
+						let struct_name = uppercaseFirstLetter(_.camelCase(key))
+						if (key.endsWith("s")) {
+							struct_name = uppercaseFirstLetter(_.camelCase(key.slice(0, -1)))
+						}
+
 						type = `[${struct_name}]`
 						code += OBJ2Struct(struct_name, value[0])
 					} else {
-						const struct_name = uppercaseFirstLetter(key)
+						const struct_name = uppercaseFirstLetter(_.camelCase(key))
 						type = struct_name
 						code += OBJ2Struct(struct_name, value)
-
 					}
 				} else {
 					//@ts-ignore
 					type = typing_names[(typeof value)]
 				}
 
-				struct_code.push(`\tvar ${key}: ${type}`)
+				struct_code.push(`var ${_.camelCase(key)}: ${type}`)
 			}
 
-			return `struct ${name}: Codable {\n${struct_code.join("\n")}\n}\n\n${code}`
+			// adding camelCase instead of snake_case or etc
+			let last_is_ok = false
+			for (const key of Object.keys(o)) {
+				if (key === _.camelCase(key)) {
+					if (last_is_ok) {
+						coding_keys[coding_keys.length - 1] = `${_.last(coding_keys)}, ${key}`
+					} else {
+						coding_keys.push(`case ${key}`)
+						last_is_ok = true
+					}
+				} else {
+					if (last_is_ok) {
+						last_is_ok = false
+					}
+
+					coding_keys.push(`case ${_.camelCase(key)} = "${key}"`)
+				}
+			}
+
+			if (exampleRef.current!.checked) {
+				let fields = Object
+					.entries(o)
+					.map(([field, val]) => {
+						let swiftval = `${val}`
+						if (typeof val === "string") {
+							swiftval = `"${val}"`
+						} else if (typeof val === "object") {
+							if (Array.isArray(val)) {
+								let struct_name = uppercaseFirstLetter(_.camelCase(field))
+								if (field.endsWith("s")) {
+									struct_name = uppercaseFirstLetter(_.camelCase(field.slice(0, -1)))
+								}
+
+								swiftval = `[${struct_name}.example]`
+							} else {
+								const struct_name = uppercaseFirstLetter(_.camelCase(field))
+								swiftval = `${struct_name}.example`
+							}
+						}
+
+						return `${_.camelCase(field)}: ${swiftval}`
+					})
+
+				struct_code.push(``)
+				struct_code.push(`static let example = ${name}(${fields.join(", ")})`)
+			}
+
+
+			// static let example = Server(id: <#T##Int#>, name: <#T##String#>, comment: <#T##String#>, createdAt: <#T##Date#>, os: <#T##OS#>, software: <#T##Software#>, presetID: <#T##Int#>, location: <#T##String#>, configuratorID: <#T##Int#>, bootMode: <#T##String#>, status: <#T##String#>, startAt: <#T##String#>, isDdosGuard: <#T##Bool#>, cpu: <#T##Int#>, cpuFrequency: <#T##String#>, ram: <#T##Int#>, disks: <#T##[Disk]#>, avatarID: <#T##String#>, vncPass: <#T##String#>, networks: <#T##[Network]#>)
+			return (addMarkRef.current!.checked ? [
+				`// MARK: - ${name}`
+			] : []).concat([
+				`struct ${name}: Codable {`,
+				`	${struct_code.join("\n\t")}`,
+				`	`,
+				`	enum CodingKeys: String, CodingKey {`,
+				`		${coding_keys.join("\n\t\t")}`,
+				`	}`,
+				`}`,
+				``,
+				`${code}`
+			]).join("\n")
 		}
 
-		const obj = JSON.parse(json)
-		setSwiftCode(OBJ2Struct("Json2Struct", obj))
+		try {
+			const obj = JSON.parse(json)
+			setSwiftCode(OBJ2Struct("Json2Struct", obj))
+
+			//@ts-ignore
+		} catch (e: Error) {
+			setSwiftCode(`// Error raised: \n//   ${e.message}`)
+		}
 	}
 
 	return (
 		<ResourcePage title={"json2struct"}>
-			<div className="grid grid-cols-2 gap-2">
+			<div className="grid md:grid-cols-2 gap-5">
 				<div>
 					<p className="mt-5">JSON:</p>
-					<textarea className="control w-full resize-none" rows={18}
-							  value={json} onChange={(e) => setJSON(e.target.value)}
+					<Editor
+						value={json}
+						className="border p-2 rounded-xl"
+						onChange={val => setJSON(val!)}
+						theme={isDark ? "vs-dark" : "light"}
+						
+						defaultLanguage="json"
+						height="60vh"
 					/>
 				</div>
 
+
 				<div>
 					<p className="mt-5">Swift Code:</p>
-					<textarea className="control w-full resize-none" readOnly rows={18}
-							  value={swiftCode}
+					<Editor
+						value={swiftCode}
+						className="border p-2 rounded-xl"
+						options={{
+							readOnly: true,
+							minimap: {
+								enabled: false,
+							},
+						}}
+						theme={isDark ? "vs-dark" : "light"}
+						defaultLanguage="swift"
+						height="60vh"
 					/>
 				</div>
 			</div>
 
-			<button className="btn blue w-full mt-2" onClick={generateCode}>Сгенерировать</button>
+			<p className="mt-2">Options:</p>
+			<div className="grid grid-cols-3 gap-2 p-4 border rounded-2xl">
+				<div>
+					<input type="checkbox" className="mr-2" ref={exampleRef}/>
+					<label>Add <code>example</code> static</label>
+				</div>
+				<div>
+					<input type="checkbox" className="mr-2" ref={addMarkRef}/>
+					<label>Add <code>{"// MARK: - Name"}</code> before structs</label>
+				</div>
+			</div>
+
+			<button className="btn blue w-full mt-2" onClick={generateCode}>Generate</button>
 
 		</ResourcePage>
 	)
